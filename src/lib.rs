@@ -15,7 +15,7 @@ where
     Chain { a: a, b: b }
 }
 
-impl<A, B, I> IntoIterator for Chain<A, B, I> 
+impl <'t, A, B, I> IntoIterator for &'t Chain<A, B, I>
 where 
     A: IntoIterator<Item = I> + Copy,
     B: IntoIterator<Item = I> + Copy 
@@ -48,9 +48,16 @@ where
 mod tests {
     use super::*;
     #[test]
-    fn it_works() {
+    fn copy_test() {
         let result = chain(&[1, 2, 3], &[4, 5, 6]);
         let v: Vec<isize> = result.into_iter().map(|x| *x).collect();
         assert_eq!(vec!(1, 2, 3, 4, 5, 6), v);
+    }
+    #[test]
+    fn ref_test() {
+        let result = &chain(&[1, 2, 3], &[4, 5, 6]);
+        let x = chain(result, &[7, 8, 9]);
+        let v: Vec<isize> = x.into_iter().map(|x| *x).collect();
+        assert_eq!(vec!(1, 2, 3, 4, 5, 6, 7, 8, 9), v);
     }
 }
