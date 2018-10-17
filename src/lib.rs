@@ -1,7 +1,7 @@
 pub struct Chain<A, B, I> 
 where 
     A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy
+    B: IntoIterator<Item = I> + Copy,
 {
     pub a: A,
     pub b: B,
@@ -10,7 +10,7 @@ where
 pub fn chain<A, B, I>(a: A, b: B) -> Chain<A, B, I> 
 where 
     A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy
+    B: IntoIterator<Item = I> + Copy,
 {
     Chain { a: a, b: b }
 }
@@ -18,7 +18,7 @@ where
 impl <'t, A, B, I> IntoIterator for &'t Chain<A, B, I>
 where 
     A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy 
+    B: IntoIterator<Item = I> + Copy,
 {
     type Item = I;
     type IntoIter = std::iter::Chain<A::IntoIter, B::IntoIter>;
@@ -30,7 +30,7 @@ where
 impl <A, B, I> IntoIterator for Chain<A, B, I>
 where 
     A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy 
+    B: IntoIterator<Item = I> + Copy,
 {
     type Item = I;
     type IntoIter = std::iter::Chain<A::IntoIter, B::IntoIter>;
@@ -42,14 +42,14 @@ where
 impl<A, B, I> Copy for Chain<A, B, I>
 where
     A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy
+    B: IntoIterator<Item = I> + Copy,
 {
 }
 
 impl<A, B, I> Clone for Chain<A, B, I>
 where
     A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy
+    B: IntoIterator<Item = I> + Copy,
 {
     fn clone(&self) -> Self {
         chain(self.a, self.b)
