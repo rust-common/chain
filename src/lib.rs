@@ -27,6 +27,23 @@ where
     }
 }
 
+impl<A, B, I> Copy for Chain<A, B, I>
+where
+    A: IntoIterator<Item = I> + Copy,
+    B: IntoIterator<Item = I> + Copy
+{
+}
+
+impl<A, B, I> Clone for Chain<A, B, I>
+where
+    A: IntoIterator<Item = I> + Copy,
+    B: IntoIterator<Item = I> + Copy
+{
+    fn clone(&self) -> Self {
+        chain(self.a, self.b)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
