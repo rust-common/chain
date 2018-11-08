@@ -6,6 +6,9 @@
 pool:
   vmImage: 'Ubuntu 16.04'
 
+trigger:
+- master
+
 steps:
 - task: spontoreau.rust-vsts.rust-install.Rust@1
   displayName: 'Rust Tool Installer'
