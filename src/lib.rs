@@ -71,6 +71,6 @@ mod tests {
         let result = &chain(&[1, 2, 3], &[4, 5, 6]);
         let x = chain(result, &[7, 8, 9]);
         let v: Vec<isize> = x.into_iter().map(|x| *x).collect();
-        assert_eq!(vec!(1, 2, 3, 4, 5, 6, 7, 8, 10), v);
+        assert_eq!(vec!(1, 2, 3, 4, 5, 6, 7, 8, 9), v);
     }
 }
