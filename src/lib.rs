@@ -1,5 +1,5 @@
-pub struct Chain<A, B, I> 
-where 
+pub struct Chain<A, B, I>
+where
     A: IntoIterator<Item = I> + Copy,
     B: IntoIterator<Item = I> + Copy,
 {
@@ -7,8 +7,8 @@ where
     pub b: B,
 }
 
-pub fn chain<A, B, I>(a: A, b: B) -> Chain<A, B, I> 
-where 
+pub fn chain<A, B, I>(a: A, b: B) -> Chain<A, B, I>
+where
     A: IntoIterator<Item = I> + Copy,
     B: IntoIterator<Item = I> + Copy,
 {
@@ -16,7 +16,7 @@ where
 }
 
 impl <'t, A, B, I> IntoIterator for &'t Chain<A, B, I>
-where 
+where
     A: IntoIterator<Item = I> + Copy,
     B: IntoIterator<Item = I> + Copy,
 {
@@ -28,7 +28,7 @@ where
 }
 
 impl <A, B, I> IntoIterator for Chain<A, B, I>
-where 
+where
     A: IntoIterator<Item = I> + Copy,
     B: IntoIterator<Item = I> + Copy,
 {
