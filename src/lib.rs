@@ -1,58 +1,60 @@
-pub struct Chain<A, B, I>
+pub struct Chain<A, B>
 where
-    A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy,
+    A: IntoIterator + Copy,
+    B: IntoIterator<Item = A::Item> + Copy,
 {
-    pub a: A,
-    pub b: B,
+    a: A,
+    b: B,
 }
 
-pub fn chain<A, B, I>(a: A, b: B) -> Chain<A, B, I>
+impl<A, B> Chain<A, B>
 where
-    A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy,
+    A: IntoIterator + Copy,
+    B: IntoIterator<Item = A::Item> + Copy,
 {
-    Chain { a: a, b: b }
+    pub fn new(a: A, b: B) -> Self {
+        Self { a: a, b: b }
+    }
 }
 
-impl <'t, A, B, I> IntoIterator for &'t Chain<A, B, I>
+impl<'t, A, B> IntoIterator for &'t Chain<A, B>
 where
-    A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy,
+    A: IntoIterator + Copy,
+    B: IntoIterator<Item = A::Item> + Copy,
 {
-    type Item = I;
+    type Item = A::Item;
     type IntoIter = std::iter::Chain<A::IntoIter, B::IntoIter>;
     fn into_iter(self) -> Self::IntoIter {
         self.a.into_iter().chain(self.b.into_iter())
     }
 }
 
-impl <A, B, I> IntoIterator for Chain<A, B, I>
+impl <A, B> IntoIterator for Chain<A, B>
 where
-    A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy,
+    A: IntoIterator + Copy,
+    B: IntoIterator<Item = A::Item> + Copy,
 {
-    type Item = I;
+    type Item = A::Item;
     type IntoIter = std::iter::Chain<A::IntoIter, B::IntoIter>;
     fn into_iter(self) -> Self::IntoIter {
         (&self).into_iter()
     }
 }
 
-impl<A, B, I> Copy for Chain<A, B, I>
+impl<A, B> Copy for Chain<A, B>
 where
-    A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy,
+    A: IntoIterator + Copy,
+    B: IntoIterator<Item = A::Item> + Copy,
 {
 }
 
-impl<A, B, I> Clone for Chain<A, B, I>
+impl<A, B> Clone for Chain<A, B>
 where
-    A: IntoIterator<Item = I> + Copy,
-    B: IntoIterator<Item = I> + Copy,
+    A: IntoIterator + Copy,
+    B: IntoIterator<Item = A::Item> + Copy,
 {
     fn clone(&self) -> Self {
-        chain(self.a, self.b)
+        Self { a: self.a, b: self.b }
     }
 }
 
@@ -61,15 +63,15 @@ mod tests {
     use super::*;
     #[test]
     fn copy_test() {
-        let result = chain(&[1, 2, 3], &[4, 5, 6]);
-        let x = chain(result, &[7, 8, 9]);
+        let result = Chain::new(&[1, 2, 3], &[4, 5, 6]);
+        let x = Chain::new(result, &[7, 8, 9]);
         let v: Vec<isize> = x.into_iter().map(|x| *x).collect();
         assert_eq!(vec!(1, 2, 3, 4, 5, 6, 7, 8, 9), v);
     }
     #[test]
     fn ref_test() {
-        let result = &chain(&[1, 2, 3], &[4, 5, 6]);
-        let x = chain(result, &[7, 8, 9]);
+        let result = &Chain::new(&[1, 2, 3], &[4, 5, 6]);
+        let x = Chain::new(result, &[7, 8, 9]);
         let v: Vec<isize> = x.into_iter().map(|x| *x).collect();
         assert_eq!(vec!(1, 2, 3, 4, 5, 6, 7, 8, 9), v);
     }
