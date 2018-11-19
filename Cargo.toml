@@ -1,6 +1,6 @@
 [package]
 name = "chain-intoiter"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Sergey Shandar"]
 description = "Chaining IntoIter"
 license = "Apache-2.0"

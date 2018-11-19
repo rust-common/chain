@@ -1,23 +1,30 @@
-pub struct Chain<A, B>
-where
-    A: IntoIterator + Copy,
-    B: IntoIterator<Item = A::Item> + Copy,
+pub struct ChainIntoIter<A, B>
+    where
+        A: IntoIterator + Copy,
+        B: IntoIterator<Item = A::Item> + Copy,
 {
     a: A,
     b: B,
 }
 
-impl<A, B> Chain<A, B>
-where
-    A: IntoIterator + Copy,
-    B: IntoIterator<Item = A::Item> + Copy,
+pub trait Chain
+    where Self: IntoIterator + Copy
 {
-    pub fn new(a: A, b: B) -> Self {
-        Self { a: a, b: b }
+    fn chain<B>(self, b: B) -> ChainIntoIter<Self, B>
+        where B: IntoIterator<Item = Self::Item> + Copy;
+}
+
+impl<T> Chain for T
+    where T: IntoIterator + Copy
+{
+    fn chain<B>(self, b: B) -> ChainIntoIter<Self, B>
+        where B: IntoIterator<Item = Self::Item> + Copy
+    {
+        ChainIntoIter { a: self, b: b }
     }
 }
 
-impl<'t, A, B> IntoIterator for &'t Chain<A, B>
+impl<'t, A, B> IntoIterator for &'t ChainIntoIter<A, B>
 where
     A: IntoIterator + Copy,
     B: IntoIterator<Item = A::Item> + Copy,
@@ -29,7 +36,7 @@ where
     }
 }
 
-impl <A, B> IntoIterator for Chain<A, B>
+impl <A, B> IntoIterator for ChainIntoIter<A, B>
 where
     A: IntoIterator + Copy,
     B: IntoIterator<Item = A::Item> + Copy,
@@ -41,20 +48,20 @@ where
     }
 }
 
-impl<A, B> Copy for Chain<A, B>
+impl<A, B> Copy for ChainIntoIter<A, B>
 where
     A: IntoIterator + Copy,
     B: IntoIterator<Item = A::Item> + Copy,
 {
 }
 
-impl<A, B> Clone for Chain<A, B>
+impl<A, B> Clone for ChainIntoIter<A, B>
 where
     A: IntoIterator + Copy,
     B: IntoIterator<Item = A::Item> + Copy,
 {
     fn clone(&self) -> Self {
-        Self { a: self.a, b: self.b }
+        ChainIntoIter { a: self.a, b: self.b }
     }
 }
 
@@ -63,15 +70,15 @@ mod tests {
     use super::*;
     #[test]
     fn copy_test() {
-        let result = Chain::new(&[1, 2, 3], &[4, 5, 6]);
-        let x = Chain::new(result, &[7, 8, 9]);
+        let result = [1, 2, 3].chain(&[4, 5, 6]);
+        let x = result.chain(&[7, 8, 9]);
         let v: Vec<isize> = x.into_iter().map(|x| *x).collect();
         assert_eq!(vec!(1, 2, 3, 4, 5, 6, 7, 8, 9), v);
     }
     #[test]
     fn ref_test() {
-        let result = &Chain::new(&[1, 2, 3], &[4, 5, 6]);
-        let x = Chain::new(result, &[7, 8, 9]);
+        let result = [1, 2, 3].chain(&[4, 5, 6]);
+        let x = &result.chain(&[7, 8, 9]);
         let v: Vec<isize> = x.into_iter().map(|x| *x).collect();
         assert_eq!(vec!(1, 2, 3, 4, 5, 6, 7, 8, 9), v);
     }
